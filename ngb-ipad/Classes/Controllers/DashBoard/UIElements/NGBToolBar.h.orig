@@ -1,0 +1,27 @@
+//
+//  NGBToolBar.h
+//  ngb-ipad
+//
+//  Created by Michael Apanowicz on 10/8/12.
+//  Copyright (c) 2012 michal.apanowicz@miquido.com. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "NotificationsManager.h"
+#import "NotificationsPopUp.h"
+#import "Colors.h"
+
+@interface NGBToolBar : UIView {
+  UIButton *_notificationButton;
+  UIButton *_facebookButton;
+  UIButton *_twitterButton;
+  UISearchBar *_searchBar;
+  UIButton *_microphoneButton;
+  NotificationsPopUp *_notifPopUpRef;
+  UILabel *_descriptionLabel;
+}
+
+@property(nonatomic, retain) UILabel *descriptionLabel;
+
+
+@end

@@ -1,0 +1,196 @@
+//
+//  DashBoardViewController.m
+//  ngb-ipad
+//
+//  Created by Julian Król on 9/20/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//
+
+#import "DashBoardViewController.h"
+
+@interface DashBoardViewController ()
+@property(nonatomic) BOOL onceExecutedFlag;
+
+
+@end
+
+@implementation DashBoardViewController
+@synthesize onceExecutedFlag = _onceExecutedFlag;
+
+
+- (id)init {
+  self = [super init];
+  if (self) {
+    UIBarButtonItem *item = [[[UIBarButtonItem alloc] init] autorelease];
+    [item setBackgroundImage:[UIImage imageNamed:@"button_back@2x.png"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [self.navigationItem setLeftBarButtonItems:[[[NSArray alloc] initWithObjects:item, nil] autorelease]];
+
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setFrame:CGRectMake(0, 0, 60, 60)];
+    [button setBackgroundColor:[UIColor redColor]];
+
+    UIImageView *iv = [[[UIImageView alloc] init] autorelease];
+
+    [self.tabBarController.navigationController.view addSubview:button];
+
+    NGBToolBar *customToolbar = [[[NGBToolBar alloc] initWithFrame:CGRectMake(0, 0, 1024, 45)] autorelease];
+    [self.view addSubview:customToolbar];
+  }
+  return self;
+}
+
+- (void)loadView {
+  [super loadView];
+}
+
+
+#pragma mark - Panels creation
+- (BaseLeftPanelViewController *)createLeftPanel {
+  DashboardLeftPanelViewController *leftPanelVC = [[[DashboardLeftPanelViewController alloc] init] autorelease];
+  leftPanelVC.parentVC = self;
+  return leftPanelVC;
+}
+
+- (BaseTopPanelViewController *)createTopPanel {
+  DashboardTopPanelViewController *topPanelVC = [[[DashboardTopPanelViewController alloc] init] autorelease];
+  topPanelVC.parentVC = self;
+  return topPanelVC;
+}
+
+- (BaseBottomPanelViewController *)createBottomPanel {
+  DashBoardBottomPanelViewController *bottomPanelVC = [[[DashBoardBottomPanelViewController alloc] init] autorelease];
+  bottomPanelVC.parentVC = self;
+  return bottomPanelVC;
+}
+
+
+- (void)viewDidLoad {
+  [super viewDidLoad];
+  [self logIn];
+}
+
+
+- (void)viewDidUnload {
+  [super viewDidUnload];
+}
+
+
+- (void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  [[(DashboardLeftPanelViewController *) self.leftPanel youAreWatchingView].programNameButton addTarget:self action:@selector(goToProgramInfo) forControlEvents:UIControlEventTouchUpInside];
+}
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+  return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+
+#pragma mark - Buttons actions
+- (IBAction)goToProgramInfo {
+  [self.tabBarController setSelectedIndex:1];
+}
+
+
+#pragma mark -  remote data client
+- (void)logIn {
+  LogInRequest *request = [[LogInRequest alloc] init];
+  [[RemoteDataClient instance] logIn:request withDelegate:self];
+  [request release];
+}
+
+
+- (void)onError:(ErrorResponse *)error {
+  NSLog(@"program info err msg: %@, %@ failed.", error.errorMessage, error.whatFailed);
+  if (error.errorTag == 100) {
+    NSLog(@"logging failed");
+    UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert", nil) message:NSLocalizedString(@"log.in.failed", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:NSLocalizedString(@"reload", nil), nil] autorelease];
+    [alertView show];
+  }
+  [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+}
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+  if (buttonIndex == 1) {
+    [self logIn];
+  }
+}
+
+
+- (void)onGetLoginSuccess:(LogInResponse *)response {
+  NSLog(@"login success");
+  [[ConfigurationManager instance] setSessionId:response.idStr];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SESSION_OBTAINED object:nil];
+  [NSTimer scheduledTimerWithTimeInterval:RELOAD_PROFILE_INFO target:self selector:@selector(reloadProfileInfo) userInfo:nil repeats:YES];
+}
+
+
+- (void)reloadProfileInfo {
+  GetProfileRequest *request = [[GetProfileRequest alloc] init];
+  [[RemoteDataClient instance] getProfileDetails:request withDelegate:self];
+  [request release];
+}
+
+
+- (void)onGetProfileSuccess:(GetProfileResponse *)response {
+  [[ConfigurationManager instance] setUpProfileID:response.id];
+  NSLog(@"new currently watching id: %@", response.current_channel_id);
+  NSLog(@"old currently watching id: %@", [[ConfigurationManager instance] getCurrentChannelID]);
+  if (response.current_channel_id != nil && ![response.current_channel_id isEqualToString:[[ConfigurationManager instance] getCurrentChannelID]]) {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    GetProgramOnChannelRequest *request = [[GetProgramOnChannelRequest alloc] init];
+    request.channelID = response.current_channel_id;
+    NSLog(@"%@", response.current_channel_id);
+    [[ConfigurationManager instance] setUpCurrentChannelID:response.current_channel_id];
+    [self loadProgram];
+    [request release];
+  }
+  if (!self.onceExecutedFlag) {
+    [NSTimer scheduledTimerWithTimeInterval:NOTIFICATIONS_TIME_INTERVAL target:self selector:@selector(checkNotifications) userInfo:nil repeats:YES];
+    self.onceExecutedFlag = YES;
+    GetFriendsRequest *request = [[GetFriendsRequest alloc] init];
+    [[RemoteDataClient instance] getFriendsForProfile:request withDelegate:self];
+    [request release];
+  }
+}
+
+
+- (void)checkNotifications {
+  GetNotificationsRequest *request = [[GetNotificationsRequest alloc] init];
+  [[RemoteDataClient instance] getNotifications:request withDelegate:self];
+  [request release];
+}
+
+
+- (void)onGetNotificationsSuccess:(GetNotificationsResponse *)response {
+  if (response.notificationsArray != nil) {
+    [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:[NSString stringWithFormat:@"%d", [response.notificationsArray count]]];
+    [[NotificationsManager instance] setNotificationsArray:response.notificationsArray];
+  }
+}
+
+
+- (void)loadProgram {
+  GetProgramOnChannelRequest *request = [[GetProgramOnChannelRequest alloc] init];
+  request.channelID = [[ConfigurationManager instance] getCurrentChannelID];
+  if (request.channelID != nil)
+    [[RemoteDataClient instance] getProgramOnChannel:request withDelegate:self];
+  [request release];
+}
+
+
+- (void)onGetProgramOnChannelSuccess:(GetProgramOnChannelResponse *)response {
+  [[ConfigurationManager instance] setUpCurrentlyWatchingProgram:response.program];
+  [((DashboardLeftPanelViewController *) self.leftPanel).youAreWatchingView changeWatchingProgramName:response.program.name];
+  [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+}
+
+
+- (void)onGetFriendsSuccess:(GetFriendsResponse *)response {
+  [(DashboardLeftPanelViewController *) self.leftPanel youAreWatchingView].popup.friendsArray = response.friendsArray;
+  [[(DashboardLeftPanelViewController *) self.leftPanel youAreWatchingView].popup fillWithFriends];
+}
+
+
+@end

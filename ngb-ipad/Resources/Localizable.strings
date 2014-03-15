@@ -1,0 +1,108 @@
+/* 
+  Localizable.strings
+  ngb-ipad
+
+  Created by Michael Apanowicz on 09/20/12.
+  Copyright (c) 2012 Miquido. All rights reserved.
+*/
+
+/*  Tabbar items  */
+"tab.dashboard" = "Dashboard";
+"tab.programInfo" = "Program Info";
+"tab.guide" = "Guide";
+"tab.schedule" = "Schedule";
+"tab.notifications" = "Notifications";
+"tab.friends" = "Friends";
+"tab.socialTrends" = "Social trend";
+"tab.settings" = "Settings";
+
+/*  Dashboard */
+"dashborad.youAreWatching" = "You're watching";
+"dashboard.youAreGoing" = "You are going to watch";
+"dashborad.upcomingShows" = "Upcoming shows";
+"dashboard.your.upcoming" = "Your Upcoming Shows";
+"dashborad.wall" = "Wall";
+"dashborad.shows" = "Shows";
+"dashborad.featuredShow" = "Featured show:";
+"dashborad.segmentedControll.popular" = "Popular";
+"dashborad.segmentedControll.youMightLike" = "You might like";
+"dashborad.segmentedControll.onAir" = "On Air";
+"dashboard.popup.send" = "SEND";
+"dashboard.popup.isWatching" = "is watching";
+"dashboard.thumbUp" = "Thumb up!";
+"dashboard.thumbDown" = "Thumb down";
+"dashboard.addedToCalendar" = "Show has been added to the calendar";
+"dashboard.changeChannel" = "Program has been changed";
+"dashboard.friendsLikeIt" = " friends like it"; // Remember about space before friends!
+"dashboard.friendsWatching" = "Friends Watching";
+
+/*  Program info  */
+"prog.info.about.the.program" = "About the Program";
+"prog.info.cast" = "Cast";
+"prog.info.season" = "Season";
+"prog.info.episode" = "episode";
+"prog.info.available.episodes" = "Available Episodes";
+
+"alert" = "Alert!";
+"log.in.failed" = "Log in failed!";
+"cancel" = "Cancel";
+"reload" = "Reload";
+"similar.shows.dots" = "Similar shows:";
+"similar.shows" = "Similar Shows";
+"tuned.in" = "Tuned in!";
+
+"friend.requests" = "Friend Requests";
+"your.friends" = "Your Friends";
+"added.to.calendar" = "Added to the calendar.";
+"read.more" = "READ MORE";
+"he.likes" = "He likes";
+"in.common" = "In common";
+"chats" = "Chats";
+"invites" = "Invites";
+"friends" = "Friends";
+
+"shows" = "Shows";
+"is.watching" = "is watching";
+"day" = "Day";
+"week" = "Week";
+"month" = "Month";
+"producers.dots" = "Producers:";
+"stars.dots" = "Stars:";
+
+
+///////////////////////////////////////////////////////////////////////
+//DATA WHICH CAN BE CHANGED BEFORE DEMO
+///////////////////////////////////////////////////////////////////////
+"title.kovue" = "KoVue";
+"game.of.throne" = "Game of Throne";
+"channel.name.on.schedule.banner" = "FOX";
+"default.date.on.schedule.banner" = "Wed, Sun 18:00 - 19:00";
+
+"prog.1.name" = "How I met your mother";
+"prog.1.date" = "12:00am - 12:45am";
+"prog.1.desc" = "Ted searches for the woman of his dreams in New York City with the help of his four best friends.";
+"prog.1.stars" = "Josh Radnor, Jason Segel, Cobie Smulders, Neil Patrick Harris, Alyson Hannigan";
+"prog.1.banner" ="how_i_met.png";
+"prog.1.icon" = "";
+
+"prog.2.name" = "Lord of the Rings";
+"prog.2.date" = "9:00pm - 10:15pm";
+"prog.2.desc" = "An innocent hobbit of The Shire journeys with eight companions to the fires of Mount Doom to destroy the One Ring and the dark lord Sauron forever.";
+"prog.2.stars" ="Elijah Wood, Ian McKellen, Orlando Bloom";
+"prog.2.banner" = "lord_banner.png";
+"prog.2.icon" = "lord_icon.png";
+
+"prog.3.name" = "UEFA Championship League";
+"prog.3.date" = "3:30pm - 4:14am";
+"prog.3.desc" = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget elit augue, ut commodo mauris. Integer non tristique nisl. Pellentesque ut dolor enim, ac mollis augue. Donec at eros enim.";
+"prog.3.stars" = "";
+"prog.3.banner" = "championsleague_banner.png";
+"prog.3.icon" = "dashboard_championship.png";
+
+"channel.id.for.schedule" = "506c49f0-2431-d88b-1524-cd12e2374ee0";
+
+"expression.to.compare" = "Mentalist"; //case sensitive!
+"icon.for.program.if.expression.true" = "mentalist_icon.png";
+"icon.for.program.if.expression.false" = "NCIS_icon.png";
+
+"icon.for.future.program.in.schedule" = "dashboard_hearts.png";

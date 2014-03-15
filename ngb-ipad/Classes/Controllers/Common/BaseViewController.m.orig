@@ -1,0 +1,74 @@
+//
+//  BaseViewController.m
+//  ngb-ipad
+//
+//  Created by Julian Król on 9/20/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//
+
+#import "BaseViewController.h"
+
+@interface BaseViewController ()
+
+@end
+
+@implementation BaseViewController
+@synthesize leftPanel = _leftPanel;
+@synthesize topPanel = _topPanel;
+@synthesize bottomPanel = _bottomPanel;
+@synthesize leftPanelWidth = _leftPanelWidth;
+@synthesize topPanelHeight = _topPanelHeight;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+  self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+  if (self) {
+    // Custom initialization
+  }
+  return self;
+}
+
+- (void)viewDidLoad {
+  [super viewDidLoad];
+  // Do any additional setup after loading the view.
+}
+
+- (void)viewDidUnload {
+  [super viewDidUnload];
+  // Release any retained subviews of the main view.
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+  return YES;
+}
+
+
+- (void)initializeComponents {
+  CGRect screenRect = [[UIScreen mainScreen] bounds];
+  CGFloat screenWidth = screenRect.size.width;
+  CGFloat screenHeight = screenRect.size.height;
+
+  self.leftPanel = [[[LeftPanelViewController alloc] init] autorelease];
+  self.leftPanel.view.frame = CGRectMake(0, 0, self.leftPanelWidth, screenHeight);
+  self.leftPanel.view.backgroundColor = [UIColor grayColor];
+  [self.view addSubview:self.leftPanel.view];
+
+  self.topPanel = [[[TopPanelViewController alloc] init] autorelease];
+  self.topPanel.view.frame = CGRectMake(self.leftPanelWidth, 0, screenWidth - self.leftPanelWidth, self.topPanelHeight);
+  self.topPanel.view.backgroundColor = [UIColor darkGrayColor];
+  [self.view addSubview:self.topPanel.view];
+
+  self.bottomPanel = [[[BottomPanelViewController alloc] init] autorelease];
+  self.bottomPanel.view.frame = CGRectMake(self.leftPanelWidth, self.topPanelHeight, screenWidth - self.leftPanelWidth, screenHeight - self.topPanelHeight);
+  self.bottomPanel.view.backgroundColor = [UIColor orangeColor];
+  [self.view addSubview:self.bottomPanel.view];
+}
+
+
+- (void)dealloc {
+  [_bottomPanel release];
+  [_leftPanel release];
+  [_topPanel release];
+  [super dealloc];
+}
+
+@end

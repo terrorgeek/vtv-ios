@@ -1,0 +1,116 @@
+//
+//  NGBToolBar.m
+//  ngb-ipad
+//
+//  Created by Michael Apanowicz on 10/8/12.
+//  Copyright (c) 2012 michal.apanowicz@miquido.com. All rights reserved.
+//
+
+#import "NGBToolBar.h"
+
+@interface NGBToolBar ()
+@property(nonatomic, retain) UIButton *notificationButton;
+@property(nonatomic, retain) UIButton *facebookButton;
+@property(nonatomic, retain) UIButton *twitterButton;
+@property(nonatomic, retain) UISearchBar *searchBar;
+@property(nonatomic, retain) UIButton *microphoneButton;
+@property(nonatomic, retain) NotificationsPopUp *notifPopUpRef;
+
+
+@end
+
+@implementation NGBToolBar
+
+@synthesize notificationButton = _notificationButton;
+@synthesize facebookButton = _facebookButton;
+@synthesize twitterButton = _twitterButton;
+@synthesize searchBar = _searchBar;
+@synthesize microphoneButton = _microphoneButton;
+@synthesize notifPopUpRef = _notifPopUpRef;
+@synthesize descriptionLabel = _descriptionLabel;
+
+
+- (id)initWithFrame:(CGRect)frame {
+  self = [super initWithFrame:frame];
+  if (self) {
+    UIImage *backgroundImage = [UIImage imageNamed:@"toolbar_background@2x.png"];            // TODO Michał - change image for normal size
+    UIImageView *backgroundImageView = [[[UIImageView alloc] initWithImage:backgroundImage] autorelease];
+    [backgroundImageView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+    [self addSubview:backgroundImageView];
+
+    self.notificationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.notificationButton setFrame:CGRectMake(10, 7, 30, 30)];
+    [self.notificationButton setBackgroundColor:[UIColor clearColor]];
+    [self.notificationButton setImage:[UIImage imageNamed:@"toolbar_notifications@2x.png"] forState:UIControlStateNormal]; // TODO Michał - change image for normal size
+    [self.notificationButton addTarget:self action:@selector(showNotifications) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.notificationButton];
+
+    self.facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.facebookButton setFrame:CGRectMake(50, 7, 30, 30)];
+    [self.facebookButton setBackgroundColor:[UIColor clearColor]];
+    [self.facebookButton setImage:[UIImage imageNamed:@"toolbar_facebook@2x.png"] forState:UIControlStateNormal];// TODO Michał - change image for normal size
+    [self.facebookButton addTarget:self action:@selector(showFacebookNotifications) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.facebookButton];
+
+    self.twitterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.twitterButton setFrame:CGRectMake(90, 7, 30, 30)];
+    [self.twitterButton setBackgroundColor:[UIColor clearColor]];
+    [self.twitterButton setImage:[UIImage imageNamed:@"toolbar_twitter@2x.png"] forState:UIControlStateNormal];// TODO Michał - change image for normal size
+    [self.twitterButton addTarget:self action:@selector(showTwitterNotifications) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.twitterButton];
+
+    self.searchBar = [[[UISearchBar alloc] initWithFrame:CGRectMake(800, 7, 180, 30)] autorelease];
+    [self.searchBar setBackgroundImage:nil];
+    [[self.searchBar.subviews objectAtIndex:0] removeFromSuperview];
+    [self addSubview:self.searchBar];
+
+    self.microphoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.microphoneButton setFrame:CGRectMake(987, 4, 35, 35)];
+    [self.microphoneButton setBackgroundColor:[UIColor clearColor]];
+    [self.microphoneButton setImage:[UIImage imageNamed:@"toolbar_microphone@2x.png"] forState:UIControlStateNormal];// TODO Michał - change image for normal size
+    [self addSubview:self.microphoneButton];
+
+    self.descriptionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200, 5, 368, 20)] autorelease];
+    self.descriptionLabel.font = [UIFont systemFontOfSize:20];
+    self.descriptionLabel.textColor = [Colors blackColor];
+    self.descriptionLabel.textAlignment = UITextAlignmentCenter;
+    self.descriptionLabel.backgroundColor = [UIColor clearColor];
+    [self addSubview:self.descriptionLabel];
+  }
+  return self;
+}
+
+#pragma mark - Buttons actions
+- (void)showFacebookNotifications {
+
+}
+
+- (void)showTwitterNotifications {
+
+}
+
+- (void)showNotifications {
+  if (self.notifPopUpRef == nil) {
+    NotificationsPopUp *pop = [[[NotificationsPopUp alloc] initWithFrame:CGRectMake(0, 64, 1024, 1024)] autorelease];
+    self.notifPopUpRef = pop;
+    [self.window.rootViewController.view addSubview:pop];
+  } else {
+    self.notifPopUpRef.hidden = YES;
+    self.notifPopUpRef = nil;
+  }
+
+}
+
+
+- (void)dealloc {
+  [_notificationButton release];
+  [_facebookButton release];
+  [_twitterButton release];
+  [_searchBar release];
+  [_microphoneButton release];
+  [_notifPopUpRef release];
+  [_descriptionLabel release];
+  [super dealloc];
+}
+
+@end
